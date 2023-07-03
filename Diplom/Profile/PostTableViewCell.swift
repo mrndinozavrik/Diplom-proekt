@@ -30,6 +30,7 @@ final class PostTableViewCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
         image.backgroundColor = .black
+        image.clipsToBounds = true
         return image
     }()
     
@@ -37,7 +38,7 @@ final class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .lightGray
+        label.textColor = .systemGray
         label.numberOfLines = 0
         return label
     }()
@@ -87,11 +88,17 @@ final class PostTableViewCell: UITableViewCell {
         headerLabel.text = model.author
         postImage.image = UIImage(named: model.image)
         descriptionLabel.text = model.description
-        if likesLabel.isUserInteractionEnabled == true{
-            likesLabel.text = String("Likes: \(model.likes + 1)")}
-        if whiteView.isUserInteractionEnabled == true{
-            viewsLabel.text = String("Views \(model.views + 1)")}
-
+//        if likesLabel.isUserInteractionEnabled == true{
+//            likesLabel.text = String("Likes: \(model.likes + 1)")
+//        }else {
+        likesLabel.text = String("Likes: \(model.likes.description)")
+        //}
+        
+//        if whiteView.isUserInteractionEnabled == true{
+//            viewsLabel.text = String("Views \(model.views + 1)")
+//        }else {
+        viewsLabel.text = String("Views: \(model.views.description)")
+        //}
     }
 
 //MARK: private funcs

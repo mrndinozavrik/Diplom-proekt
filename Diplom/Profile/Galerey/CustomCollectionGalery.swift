@@ -13,16 +13,17 @@ final class CustomCollectionGalery: UICollectionViewCell {
        let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleToFill
-        image.layer.cornerRadius = 6
+//        image.layer.cornerRadius = 6
         image.clipsToBounds = true
-        image.image = UIImage(named: "1")
+//        image.image = UIImage(named: "1")
         return image
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
-        contentView.backgroundColor = .white
+//        prepareForReuse()
+        
         
     }
     
@@ -30,8 +31,17 @@ final class CustomCollectionGalery: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupCell(photosModel: PhotosModel) {
+        imageView.image = UIImage(named: photosModel.photo)
+
+    }
+    override func prepareForReuse() {
+        imageView.image = nil
+    }
+    
     private func layout() {
         contentView.addSubview(imageView)
+        
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),

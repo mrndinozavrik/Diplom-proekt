@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileHeaderView: UIView {
+final class ProfileHeaderView: UIView {
     
     //MARK: - Properties
     
@@ -66,6 +66,7 @@ class ProfileHeaderView: UIView {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.addTarget(self, action: #selector(enterYourStatus), for: .editingChanged)
         textField.addTarget(self, action: #selector(hideKeyboard), for: .editingDidEndOnExit)
+        textField.indent(size: 10)
         return textField
     }()
     
@@ -82,16 +83,7 @@ class ProfileHeaderView: UIView {
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
-//    private var emptyLine: UILabel {
-//        let empty = UILabel()
-//        empty.text = "Введите статус"
-//        empty.translatesAutoresizingMaskIntoConstraints = false
-//        empty.textColor = .gray
-//        empty.font = UIFont.systemFont(ofSize: 12)
-//        empty.isHidden = false
-//        
-//        return empty
-//    }
+
     
     //MARK: - Init
     
@@ -101,6 +93,7 @@ class ProfileHeaderView: UIView {
         setupViews()
         setupAutoLayout()
         addTapGestureRecognizer(to: avatarImageView)
+        backgroundColor = .gray
     }
     
     required init?(coder: NSCoder) {
@@ -141,12 +134,22 @@ class ProfileHeaderView: UIView {
     }
     
     @objc private func buttonPressed() {
-        if statusField.text == nil{
+        if statusField.text == ""{
             statusField.placeholder = "Введите статус"
+            UIView.animate(withDuration: 1) { [weak self] in
+                guard let self else { return }
+                statusField.backgroundColor = #colorLiteral(red: 0.9112033248, green: 0.4642114639, blue: 0.7697302103, alpha: 1)
+            } completion: { _ in
+                UIView.animate(withDuration: 1) { [weak self] in
+                    guard let self else { return }
+                    statusField.backgroundColor = .systemGray6
+                }
+            }
+        }else{
+            statusLabel.text = statusText
+            statusField.text = ""
+            print("Status Text: \(statusText)")
         }
-        statusLabel.text = statusText
-        statusField.text = ""
-        print("Status Text: \(statusText)")
     }
     
     @objc private func enterYourStatus(_ textField: UITextField) {
@@ -156,15 +159,7 @@ class ProfileHeaderView: UIView {
     @objc func hideKeyboard() {
         endEditing(true)
     }
-}
-
-//MARK: - Extension
-
-extension ProfileHeaderView {
     private func setupAutoLayout() {
-//не понимаю что с этим activate не так я уже намучилась с нми
-//        let safeArea = view.safeAreaLayoutGuide
-//        [avatarLabel, statusButton, statusLabel, statusField, avatarImageView].forEach { whiteView.addSubview($0)}
         NSLayoutConstraint.activate([
             whiteView.leadingAnchor.constraint(equalTo: leadingAnchor),
             whiteView.topAnchor.constraint(equalTo: topAnchor),
@@ -176,28 +171,35 @@ extension ProfileHeaderView {
             avatarImageView.widthAnchor.constraint(equalToConstant: 100),
             avatarImageView.heightAnchor.constraint(equalToConstant: 100),
             
-            avatarLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 27),
-            avatarLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: 16),
-            avatarLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            avatarLabel.heightAnchor.constraint(equalToConstant: 20),
             
-            statusLabel.topAnchor.constraint(equalTo: statusButton.bottomAnchor, constant: -60),
-            statusLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: 16),
-            statusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            statusLabel.heightAnchor.constraint(equalToConstant: 16),
+            avatarLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 27),
+            avatarLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
+            
+            
+            statusLabel.bottomAnchor.constraint(equalTo: statusButton.topAnchor, constant: -60),
+            statusLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
+            
             
             statusField.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 11),
-            statusField.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: 16),
+            statusField.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
             statusField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             statusField.heightAnchor.constraint(equalToConstant: 40),
-                        
+            
+            
             statusButton.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 16),
             statusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             statusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             statusButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            
         ])
     }
 }
+
+//MARK: - Extension
+//extension UITextField {
+//    func indent(size:CGFloat) {
+//        self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
+//        self.leftViewMode = .always
+//    }
+//}
+
 
