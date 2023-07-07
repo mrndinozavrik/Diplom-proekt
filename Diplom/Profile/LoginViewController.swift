@@ -45,7 +45,7 @@ class LoginViewController: UIViewController {
         login.placeholder = "email or phone"
         login.isSecureTextEntry = true
         login.autocapitalizationType = .none
-        login.font = UIFont(name: "bias_Suga", size: 16)
+//        login.font = UIFont(name: "bias_Suga", size: 16)
         login.translatesAutoresizingMaskIntoConstraints = false
         login.isSecureTextEntry = false
         
@@ -67,7 +67,7 @@ class LoginViewController: UIViewController {
         let password = UITextField()
         password.placeholder = "password"
         password.isSecureTextEntry = true
-        password.font = UIFont(name: "agustd", size: 16)
+//        password.font = UIFont(name: "agustd", size: 16)
         password.autocapitalizationType = .none
         password.textColor = .black
         password.translatesAutoresizingMaskIntoConstraints = false

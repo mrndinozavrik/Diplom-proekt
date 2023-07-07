@@ -7,7 +7,11 @@
 
 import UIKit
 
-final class ProfileHeaderView: UIView {
+protocol ProfileHeaderViewDelegate: AnyObject {
+    func protocolFunction(image: UIImage?, imageRect: CGRect)
+}
+
+class ProfileHeaderView: UIView {
     
     //MARK: - Properties
     
@@ -83,6 +87,8 @@ final class ProfileHeaderView: UIView {
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
+    
+    weak var delegate: ProfileHeaderViewDelegate?
 
     
     //MARK: - Init
@@ -130,8 +136,9 @@ final class ProfileHeaderView: UIView {
     
     @objc private func avatarTapped() {
         guard findViewController() is ProfileViewController else { return }
-
     }
+    
+    
     
     @objc private func buttonPressed() {
         if statusField.text == ""{

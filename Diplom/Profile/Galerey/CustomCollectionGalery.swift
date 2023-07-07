@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CustomCollectionGaleryDelegate: AnyObject {
+    func protocolFnction(image: UIImage?, imageRect: CGRect, indexPath: IndexPath)
+}
+
 final class CustomCollectionGalery: UICollectionViewCell {
     
     private let imageView: UIImageView = {
@@ -19,10 +23,13 @@ final class CustomCollectionGalery: UICollectionViewCell {
         return image
     }()
     
+    weak var delegate: CustomCollectionGaleryDelegate?
+    private var initialIndexPath = IndexPath()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
-//        prepareForReuse()
+        prepareForReuse()
         
         
     }
@@ -37,11 +44,17 @@ final class CustomCollectionGalery: UICollectionViewCell {
     }
     override func prepareForReuse() {
         imageView.image = nil
+        let imagaTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(imagaTap)
+    }
+    
+    @objc private func openImage() {
+        delegate?.protocolFnction(image: imageView.image, imageRect: imageView.frame, indexPath: initialIndexPath)
     }
     
     private func layout() {
         contentView.addSubview(imageView)
-        
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -52,6 +65,13 @@ final class CustomCollectionGalery: UICollectionViewCell {
     
     private func customizeCell() {
         contentView.backgroundColor = .white
+    }
+    func setupCell(model: PhotosModel) {
+        imageView.image = UIImage(named: model.photo)
+    }
+        
+    func setIndexPath(indexPath: IndexPath) {
+        initialIndexPath = indexPath
     }
     
 }
