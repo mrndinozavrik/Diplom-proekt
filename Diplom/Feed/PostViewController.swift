@@ -11,19 +11,20 @@ class PostViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .systemGray
+        
+        
+        barButtonItem()
+        title = "Мой пост"
+    }
+    private func barButtonItem() {
+        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapBarButton))
+        navigationItem.rightBarButtonItem = barButtonItem
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc private func tapBarButton() {
+        let infoViewController = InfoViewController()
+        present(infoViewController, animated: true)
     }
-    */
-
+    
 }

@@ -14,8 +14,8 @@ struct PhotosModel {
     static func makePhotosModel() -> [PhotosModel] {
         var count = 1
         var arrayPhoto = [PhotosModel]()
-        for _ in 1...20 {
-            arrayPhoto.append(PhotosModel(photo: String(count)))
+        for i in 1...20 {
+            arrayPhoto.append(PhotosModel(photo: String(i)))
             count += 1
         }
         return arrayPhoto

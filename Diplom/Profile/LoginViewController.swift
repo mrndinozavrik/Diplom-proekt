@@ -74,7 +74,6 @@ class LoginViewController: UIViewController {
         password.indent(size: 10)
         
         password.delegate = self
-        //        textField.addTarget(self, action: #selector(hideKeyboard), for: .editingDidEndOnExit)
         return password
     }()
     
@@ -124,13 +123,47 @@ class LoginViewController: UIViewController {
     
     //MARK: functions
     @objc func goToProfileViewController() {
-        if passwordField.text == nil {
+        if passwordField.text == "" {
             passwordField.placeholder  = "Введите пароль"
-        } else if loginField.text == nil{
+            UIView.animate(withDuration: 1) { [weak self] in
+                guard let self else { return }
+                passwordField.backgroundColor = #colorLiteral(red: 0.9112033248, green: 0.4642114639, blue: 0.7697302103, alpha: 1)
+                self.view.layoutIfNeeded()
+            } completion: { _ in
+                UIView.animate(withDuration: 1) { [weak self] in
+                    guard let self else { return }
+                    passwordField.backgroundColor = .systemGray6
+                    self.view.layoutIfNeeded()
+                }
+            }
+        } else if loginField.text == ""{
             loginField.placeholder  = "Введите логин"
+            UIView.animate(withDuration: 1) { [weak self] in
+                guard let self else { return }
+                loginField.backgroundColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
+                self.view.layoutIfNeeded()
+            } completion: { _ in
+                UIView.animate(withDuration: 1) { [weak self] in
+                    guard let self else { return }
+                    loginField.backgroundColor = .systemGray6
+                    self.view.layoutIfNeeded()
+                }
+            }
         } else{
             if passwordField.text!.count < 5{
                 passwordField.placeholder  = "Пароль слишком короткий"
+                passwordField.text = ""
+                UIView.animate(withDuration: 1) { [weak self] in
+                    guard let self else { return }
+                    passwordField.backgroundColor = #colorLiteral(red: 0.9112033248, green: 0.4642114639, blue: 0.7697302103, alpha: 1)
+                    self.view.layoutIfNeeded()
+                } completion: { _ in
+                    UIView.animate(withDuration: 1) { [weak self] in
+                        guard let self else { return }
+                        passwordField.backgroundColor = .systemGray6
+                        self.view.layoutIfNeeded()
+                    }
+                }
             }else if (passwordField.text == "agustd" && loginField.text == "bias_Suga") {
                 navigationController?.pushViewController(ProfileViewController(), animated: true)
             }else {
@@ -139,10 +172,6 @@ class LoginViewController: UIViewController {
         }
     }
     
-//    private func setupViews() {
-//        addSubview(scrollView)
-//        [loginView, logo, stackViewForTextField, loginField, passwordField, textDelimeter, loginButton, emptyLine, fewСharacters].forEach { scrollView.addSubview($0) }
-//    }
     
 }
 
@@ -218,7 +247,8 @@ extension LoginViewController{
 //MARK: extentions
 extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        view.endEditing(true)
+        textField.resignFirstResponder()
+        return true
     }
 }
 extension UITextField {

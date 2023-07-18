@@ -7,27 +7,48 @@
 
 import UIKit
 
+protocol CustomCollectionGaleryDelegate: AnyObject {
+    func protocolFnction(image: UIImage?, imageRect: CGRect, indexPath: IndexPath)
+}
+
 final class CustomCollectionGalery: UICollectionViewCell {
     
     private let imageView: UIImageView = {
        let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleToFill
-        image.layer.cornerRadius = 6
         image.clipsToBounds = true
-        image.image = UIImage(named: "1")
         return image
     }()
+    
+    weak var delegate: CustomCollectionGaleryDelegate?
+    private var initialIndexPath = IndexPath()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
-        contentView.backgroundColor = .white
+        prepareForReuse()
+        
         
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupCell(photosModel: PhotosModel) {
+        imageView.image = UIImage(named: photosModel.photo)
+
+    }
+    override func prepareForReuse() {
+//        imageView.image = nil
+        let imagaTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(imagaTap)
+    }
+    
+    @objc private func openImage() {
+        delegate?.protocolFnction(image: imageView.image, imageRect: imageView.frame, indexPath: initialIndexPath)
     }
     
     private func layout() {
@@ -42,6 +63,13 @@ final class CustomCollectionGalery: UICollectionViewCell {
     
     private func customizeCell() {
         contentView.backgroundColor = .white
+    }
+    func setupCell(model: PhotosModel) {
+        imageView.image = UIImage(named: model.photo)
+    }
+        
+    func setIndexPath(indexPath: IndexPath) {
+        initialIndexPath = indexPath
     }
     
 }

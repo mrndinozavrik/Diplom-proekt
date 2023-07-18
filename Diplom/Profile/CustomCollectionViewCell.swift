@@ -34,10 +34,10 @@ final class CustomCollectionViewCell: UICollectionViewCell {
     }
     
     
-    private func customiseCell() {
-        contentView.backgroundColor = .systemGray5
-        contentView.layer.cornerRadius = 5
-    }
+//    private func customiseCell() {
+//        contentView.backgroundColor = .systemGray5
+//        contentView.layer.cornerRadius = 5
+//    }
     
     private func layout() {
         let safeArea = contentView.safeAreaLayoutGuide

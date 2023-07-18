@@ -7,7 +7,18 @@
 
 import UIKit
 
+protocol PostViewCellDelegate: AnyObject {
+    func increseNumbersOfLikesDelegate(indexPath: IndexPath)
+}
+
 final class PostTableViewCell: UITableViewCell {
+    
+    weak var delegateLikes: PostViewCellDelegate?
+    
+    private var numberOfLikes: Int = 0
+    private var innndexPath = IndexPath()
+    
+    private var isViewed: Bool = false
     
     //MARK: private
     private let whiteView: UIView = {
@@ -30,6 +41,7 @@ final class PostTableViewCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
         image.backgroundColor = .black
+//        image.clipsToBounds = true
         return image
     }()
     
@@ -37,7 +49,7 @@ final class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .lightGray
+        label.textColor = .systemGray
         label.numberOfLines = 0
         return label
     }()
@@ -62,14 +74,27 @@ final class PostTableViewCell: UITableViewCell {
         return label
     }()
     
+    
     //MARK: life cycle    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layout()
+        setupGest()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupGest() {
+        let oneMoreLikes = UITapGestureRecognizer(target: self, action: #selector(oneMoreLike))
+        likesLabel.isUserInteractionEnabled = true
+        likesLabel.addGestureRecognizer(oneMoreLikes)
+    }
+    
+    @objc private func oneMoreLike() {
+        delegateLikes?.increseNumbersOfLikesDelegate(indexPath: innndexPath)
+        
     }
     
     override func prepareForReuse() {
@@ -87,18 +112,23 @@ final class PostTableViewCell: UITableViewCell {
         headerLabel.text = model.author
         postImage.image = UIImage(named: model.image)
         descriptionLabel.text = model.description
-        if likesLabel.isUserInteractionEnabled == true{
-            likesLabel.text = String("Likes: \(model.likes + 1)")}
-        if whiteView.isUserInteractionEnabled == true{
-            viewsLabel.text = String("Views \(model.views + 1)")}
-
+        likesLabel.text = String("Likes: \(model.likes)")
+        viewsLabel.text = String("Views: \(model.views)")
+        if isViewed == true {
+            viewsLabel.textColor = .red
+        }
     }
-
-//MARK: private funcs
     
-    private func customiseCell() {
-        
+//    @objc private func buttonLikes() {
+//        UIView.animate(withDuration: 1) { [weak self] in
+//            guard let self else { return }
+//        }
+//    }
+    func customisePostCell(indexPath: IndexPath) {
+        innndexPath = indexPath
     }
+    
+    //MARK: private funcs
     
     private func layout() {
         let inset: CGFloat = 16
