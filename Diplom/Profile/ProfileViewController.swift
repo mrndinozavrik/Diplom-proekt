@@ -76,12 +76,12 @@ final class ProfileViewController: UIViewController{
         view.backgroundColor = .systemGray6
         layout()
         setupGesture()
-        view.addSubview(header)
+//        view.addSubview(header)
+//        self.navigationController?.navigationBar.isHidden = true
     }
     
     private func layout() {
         [tableView, newView, avatar, cross].forEach { view.addSubview($0) }
-        //        [tableView].forEach { view.addSubview($0) }
         let safeArea = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
@@ -102,14 +102,32 @@ final class ProfileViewController: UIViewController{
         ])
     }
     func setupGesture() {
-        //        let avatarImageViewTap = UITapGestureRecognizer(target: self, action: #selector(avatarImageViewAction))
-        //        _ = ProfileHeaderView().avatarImageView
-        //        header.avatarImageView.isUserInteractionEnabled = true
-        //        header.avatarImageView.addGestureRecognizer(avatarImageViewTap)
-        
+
         let closeImage = UITapGestureRecognizer(target: self, action: #selector(closeAvatarAction))
         cross.addGestureRecognizer(closeImage)
     }
+    
+//    @objc private func openPost(){
+//        let postController = AdditionalViewController()
+//        var postView = detailView
+//        if detailView.isUserInteractionEnabled == true {
+//           navigationController?.pushViewController(postController, animated: true)
+//        }
+//
+//    }
+    
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        if indexPath.section == 0 {
+//            let vc = PhotoViewController()
+//            navigationController?.pushViewController(vc, animated: false)
+//        } else {
+//            if postModel[indexPath.row].prosmotr == false{
+//                postModel[indexPath.row].views += 1
+//                postModel[indexPath.row].prosmotr = true
+//                tableView.reloadData()
+//            }
+//        }
+//    }
     
     @objc private func closeAvatarAction() {
         closeAvatarAnimation(rect: initialRect)
@@ -211,6 +229,7 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             let vc = PhotoViewController()
+//            let vc = AdditionalViewController()
             navigationController?.pushViewController(vc, animated: false)
         } else {
             if postModel[indexPath.row].prosmotr == false{
@@ -218,6 +237,10 @@ extension ProfileViewController: UITableViewDelegate {
                 postModel[indexPath.row].prosmotr = true
                 tableView.reloadData()
             }
+            let detailVC = AdditionalViewController()
+            detailVC.setupDetailVC(model: postModel[indexPath.row], indexPath: indexPath)
+            present(detailVC, animated: true)
+            
         }
     }
 
@@ -252,7 +275,9 @@ extension ProfileViewController: UITableViewDataSource{
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier, for: indexPath) as! PostTableViewCell
+            cell.delegateLikes = self
             cell.setupCell(model: postModel[indexPath.row])
+            cell.customisePostCell(indexPath: indexPath)
             return cell
         }
     }
@@ -272,7 +297,9 @@ extension ProfileViewController: ProfileHeaderViewDelegate {
 }
 extension ProfileViewController: PostViewCellDelegate {
     func increseNumbersOfLikesDelegate(indexPath: IndexPath) {
+       
         postModel[indexPath.row].likes += 1
         tableView.reloadData()
+            
     }
 }

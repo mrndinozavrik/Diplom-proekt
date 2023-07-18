@@ -12,17 +12,17 @@ protocol ProfileHeaderViewDelegate: AnyObject {
 }
 
 class ProfileHeaderView: UIView {
-    
+    weak var delegate: ProfileHeaderViewDelegate?
     //MARK: - Properties
     
     private(set) var statusText = ""
     
-    private let whiteView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray6
-        return view
-    }()
+//    private let whiteView: UIView = {
+//        let view = UIView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        view.backgroundColor = .systemGray6
+//        return view
+//    }()
 
     let avatarImageView: UIImageView = {
         let imageView = UIImageView()
@@ -69,8 +69,11 @@ class ProfileHeaderView: UIView {
         textField.layer.borderColor = UIColor.black.cgColor
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.addTarget(self, action: #selector(enterYourStatus), for: .editingChanged)
-        textField.addTarget(self, action: #selector(hideKeyboard), for: .editingDidEndOnExit)
+//        textField.addTarget(self, action: #selector(hideKeyboard), for: .editingDidEndOnExit)
         textField.indent(size: 10)
+        
+        textField.delegate = self
+        
         return textField
     }()
     
@@ -78,6 +81,9 @@ class ProfileHeaderView: UIView {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Show status", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.yellow, for: .focused)
+        button.setTitleColor(.yellow, for: .selected)
         button.backgroundColor = .blue
         button.tintColor = .white
         button.layer.cornerRadius = 4
@@ -88,18 +94,15 @@ class ProfileHeaderView: UIView {
         return button
     }()
     
-    weak var delegate: ProfileHeaderViewDelegate?
-
-    
     //MARK: - Init
     
     override init(frame: CGRect) {
-        super.init(frame: .zero)
-        
+        super.init(frame: frame)
         setupViews()
         setupAutoLayout()
-        addTapGestureRecognizer(to: avatarImageView)
-        backgroundColor = .gray
+//        addTapGestureRecognizer(to: avatarImageView)
+        backgroundColor = .systemGray6
+        setupGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -109,13 +112,18 @@ class ProfileHeaderView: UIView {
     //MARK: - Private func
     
     private func setupViews() {
-        addSubview(whiteView)
-        [avatarLabel, statusButton, statusLabel, statusField, avatarImageView].forEach { whiteView.addSubview($0) }
-//        addSubview(avatarLabel)
-//        addSubview(statusButton)
-//        addSubview(statusLabel)
-//        addSubview(statusField)
-//        addSubview(avatarImageView)
+        [avatarLabel, statusButton, statusLabel, statusField, avatarImageView].forEach { addSubview($0) }
+
+    }
+    
+    private func  setupGesture() {
+        let didTapImage = UITapGestureRecognizer(target: self, action: #selector(openImageAction))
+        avatarImageView.isUserInteractionEnabled = true
+        avatarImageView.addGestureRecognizer(didTapImage)
+    }
+    
+    @objc func openImageAction() {
+        delegate?.protocolFunction(image: avatarImageView.image, imageRect: avatarImageView.frame)
     }
     
     private func addTapGestureRecognizer(to imageView: UIImageView) {
@@ -168,10 +176,6 @@ class ProfileHeaderView: UIView {
     }
     private func setupAutoLayout() {
         NSLayoutConstraint.activate([
-            whiteView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            whiteView.topAnchor.constraint(equalTo: topAnchor),
-            whiteView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            whiteView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             avatarImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16),
             avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -202,11 +206,10 @@ class ProfileHeaderView: UIView {
 }
 
 //MARK: - Extension
-//extension UITextField {
-//    func indent(size:CGFloat) {
-//        self.leftView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: size, height: self.frame.height))
-//        self.leftViewMode = .always
-//    }
-//}
 
+extension ProfileHeaderView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        statusField.endEditing(true)
+    }
+}
 

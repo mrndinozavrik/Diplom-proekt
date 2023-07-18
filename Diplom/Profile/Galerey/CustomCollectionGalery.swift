@@ -17,9 +17,7 @@ final class CustomCollectionGalery: UICollectionViewCell {
        let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleToFill
-//        image.layer.cornerRadius = 6
         image.clipsToBounds = true
-//        image.image = UIImage(named: "1")
         return image
     }()
     
@@ -43,7 +41,7 @@ final class CustomCollectionGalery: UICollectionViewCell {
 
     }
     override func prepareForReuse() {
-        imageView.image = nil
+//        imageView.image = nil
         let imagaTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(imagaTap)

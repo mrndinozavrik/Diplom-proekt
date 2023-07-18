@@ -13,6 +13,13 @@ protocol PostViewCellDelegate: AnyObject {
 
 final class PostTableViewCell: UITableViewCell {
     
+    weak var delegateLikes: PostViewCellDelegate?
+    
+    private var numberOfLikes: Int = 0
+    private var innndexPath = IndexPath()
+    
+    private var isViewed: Bool = false
+    
     //MARK: private
     private let whiteView: UIView = {
         let view = UIView()
@@ -34,7 +41,7 @@ final class PostTableViewCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
         image.backgroundColor = .black
-        image.clipsToBounds = true
+//        image.clipsToBounds = true
         return image
     }()
     
@@ -67,34 +74,24 @@ final class PostTableViewCell: UITableViewCell {
         return label
     }()
     
-    weak var delegateLikes: PostViewCellDelegate?
-    
-    private var numberOfLikes: Int = 0
-    private var innndexPath = IndexPath()
-    private var isViewed: Bool = false
     
     //MARK: life cycle    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layout()
-//        setupCell(model: PostModel)
-//        setupGest(model: <#PostModel#>)
+        setupGest()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupGest(model: PostModel) {
+    private func setupGest() {
         let oneMoreLikes = UITapGestureRecognizer(target: self, action: #selector(oneMoreLike))
+        likesLabel.isUserInteractionEnabled = true
         likesLabel.addGestureRecognizer(oneMoreLikes)
-        if         likesLabel.isUserInteractionEnabled == true{
-            likesLabel.text = String("Likes: \(model.likes + 1)")
-        }
-        
-        
-        
     }
+    
     @objc private func oneMoreLike() {
         delegateLikes?.increseNumbersOfLikesDelegate(indexPath: innndexPath)
         
@@ -115,24 +112,23 @@ final class PostTableViewCell: UITableViewCell {
         headerLabel.text = model.author
         postImage.image = UIImage(named: model.image)
         descriptionLabel.text = model.description
-        likesLabel.text = String("Likes: \(model.likes.description)")
-        viewsLabel.text = String("Views: \(model.views.description)")
+        likesLabel.text = String("Likes: \(model.likes)")
+        viewsLabel.text = String("Views: \(model.views)")
         if isViewed == true {
             viewsLabel.textColor = .red
         }
     }
-//MARK: private funcs
     
-//    @objc private func buttonLikes(){
-//
+//    @objc private func buttonLikes() {
 //        UIView.animate(withDuration: 1) { [weak self] in
-//            guard let self else { return }}
+//            guard let self else { return }
+//        }
 //    }
-
-    
-    func customiseCell(indexPath: IndexPath) {
+    func customisePostCell(indexPath: IndexPath) {
         innndexPath = indexPath
     }
+    
+    //MARK: private funcs
     
     private func layout() {
         let inset: CGFloat = 16

@@ -19,7 +19,7 @@ final class PhotoViewController: UIViewController {
         collection.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: CustomCollectionViewCell.identifier)
         collection.dataSource = self
         collection.delegate = self
-        collection.reloadData()
+//        collection.reloadData()
         return collection
     }()
     

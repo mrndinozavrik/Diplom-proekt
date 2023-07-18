@@ -28,7 +28,7 @@ final class PhotosTableViewCell: UITableViewCell {
     private let photosLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Photos"
+        label.text = "Photo"
         label.font = .systemFont(ofSize: 18, weight: .bold, width: .standard)
         return label
     }()
@@ -50,7 +50,7 @@ final class PhotosTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layout()
-//        customiseCollection()
+
     }
     
     required init?(coder: NSCoder) {
@@ -90,7 +90,7 @@ final class PhotosTableViewCell: UITableViewCell {
 //MARK: UICollectionViewDataSource
 extension PhotosTableViewCell: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        20
+        photoModel.count
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
